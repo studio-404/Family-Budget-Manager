@@ -1,0 +1,10 @@
+.root{
+	-fx-font-family: "BPG Glaho Arial";
+	-fx-background-color: #f2f2f2;
+}
+.menuBar{
+	-fx-height:32px;
+}
+.menu{
+	-fx-font-size: 14px;
+}
