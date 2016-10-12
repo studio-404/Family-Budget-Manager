@@ -26,7 +26,7 @@ public class searchBox {
 	
 	public VBox getSerchBox(){
 		label.setText(rb.getString("typeDate"));
-		label.setPadding(new Insets(0,0,5,0));
+		label.setPadding(new Insets(10,0,5,0));
 		text.setText(rb.getString("dateFormat"));
 				
 		comb.getItems().add(rb.getString("choose"));
@@ -38,7 +38,6 @@ public class searchBox {
 		btn.setText(rb.getString("searchBtn"));
 		
 		vb.getChildren().addAll(label, text, comb, btn);
-		
 		VBox.setMargin(text, new Insets(0,0,5,0));
 		VBox.setMargin(comb, new Insets(0,0,5,0));
 		

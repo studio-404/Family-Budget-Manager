@@ -2,22 +2,31 @@ package mainPackage;
 
 public class FamilyMembers {
 	
+	private int id;
 	private String name;
 	private String surname;
 	private String number;
 	
 	public FamilyMembers(){
+		this.id = 0;
 		this.name = "";
 		this.surname = "";
 		this.number = "No";
-		
-		
 	}
 	
-	public FamilyMembers(String name, String surname, String number){
+	public FamilyMembers(int id, String name, String surname, String number){
+		this.id = id;
 		this.name = name;
 		this.surname = surname;
 		this.number = number;
+	}
+	
+	public int getId(){
+		return id;
+	}
+	
+	public void setId(int id){
+		this.id = id;
 	}
 	
 	public String getName(){

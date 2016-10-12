@@ -1,16 +1,22 @@
 package mainPackage;
 
+import java.util.Date;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import database.outcome;
+import java.sql.*;
+import java.text.SimpleDateFormat;
 
 public class outcomeTable {
 	private ResourceBundle rb;
@@ -29,8 +35,31 @@ public class outcomeTable {
 		layout = new VBox();
 		outcomeTabletitle = new Label(rb.getString("outcomes"));
 		outcomeTabletitle.setStyle("-fx-font-size: 16px;");
-		outcomeTabletitle.setPadding(new Insets(10,0,5,0));
-		layout.getChildren().addAll(outcomeTabletitle, theTable());
+		outcomeTabletitle.setPadding(new Insets(10,5,5,0));
+		
+		Button getAllList = new Button();
+		getAllList.getStyleClass().add("getAllList");
+		getAllList.setMinWidth(30);
+		getAllList.setMinHeight(30);
+		getAllList.setPadding(new Insets(15,0,15,0));
+		
+		Button addListItem = new Button();
+		addListItem.getStyleClass().add("addListItem");
+		addListItem.setMinWidth(30);
+		addListItem.setMinHeight(30);
+		addListItem.setPadding(new Insets(15,0,15,0));
+		
+		Button removeListItem = new Button();
+		removeListItem.getStyleClass().add("removeListItem");
+		removeListItem.setMinWidth(30);
+		removeListItem.setMinHeight(30);
+		removeListItem.setPadding(new Insets(15,0,15,0));
+		
+		HBox tableTopLayout = new HBox();	
+		tableTopLayout.setSpacing(5);
+		tableTopLayout.getChildren().addAll(outcomeTabletitle, getAllList, addListItem, removeListItem);
+		
+		layout.getChildren().addAll(tableTopLayout, theTable());
 		return layout;
 	}
 	
@@ -59,11 +88,23 @@ public class outcomeTable {
 	}
 	
 	public ObservableList<outcomeItems> getOutComes(){
+		outcome out = new outcome();
+		ResultSet result = out.selectOutcome();
 		allOutcomes = FXCollections.observableArrayList();
-		allOutcomes.add(new outcomeItems("25-05-206", "ნესვი", "გიო გვაზავა", "500 ლარი"));
-		allOutcomes.add(new outcomeItems("23-05-206", "საწვავი", "ქეთი გვაზავა", "250 ლარი"));
-		allOutcomes.add(new outcomeItems("11-05-206", "ტუალეტის ქაღალდი", "გურამ გვაზავა", "1120 ლარი"));
-		allOutcomes.add(new outcomeItems("09-05-206", "გადასახადები", "დარე გვაზავა", "130 ლარი"));
+		try{
+			while(result.next()){
+				Date date=new Date((long)Integer.parseInt(result.getString(2))*1000);
+				SimpleDateFormat formatDate = new SimpleDateFormat("dd-MM-yyyy");
+				allOutcomes.add(new outcomeItems(
+						formatDate.format(date),
+						result.getString(7),
+						result.getString(3) + " " +result.getString(4), 
+						result.getString(5) + " " +result.getString(6)						
+				));
+			}
+		}catch(Exception e){
+			System.out.println("error: " + e);
+		}
 		return allOutcomes;
 		
 	}
