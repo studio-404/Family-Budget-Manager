@@ -73,8 +73,17 @@
 .chartComboBoxLayout{
 	-fx-background-color: white;
 }
-
-
+.copyrightLabel{
+	
+}
+.copyright{
+	-fx-text-fill: #555555;
+}
+.copyright:hover{
+	-fx-text-fill: #0096c9;
+	-fx-text-decoration: underline;
+	-fx-cursor: hand;
+}
 
 
 

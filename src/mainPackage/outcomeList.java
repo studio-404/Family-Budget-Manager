@@ -3,96 +3,65 @@ package mainPackage;
 import java.util.Date;
 import java.util.Locale;
 import java.util.ResourceBundle;
-
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.geometry.Insets;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import database.outcome;
 import java.sql.*;
 import java.text.SimpleDateFormat;
 
-public class outcomeTable {
+public class outcomeList {
 	private ResourceBundle rb;
 	private TableView<outcomeItems> table;
 	private VBox layout;
-	private Label outcomeTabletitle;
 	private TableColumn<outcomeItems, String> dateColumn;
 	private TableColumn<outcomeItems, String> productNameColumn;
 	private TableColumn<outcomeItems, String> whoSpentColumn;
 	private TableColumn<outcomeItems, String> amountColumn;
 	private ObservableList<outcomeItems> allOutcomes;
 	
-	public VBox theLayot(){
+	public VBox theLayot(int f, int l){
 		//resource
 		rb = ResourceBundle.getBundle("lang", Locale.getDefault());
 		layout = new VBox();
-		outcomeTabletitle = new Label(rb.getString("outcomes"));
-		outcomeTabletitle.setStyle("-fx-font-size: 16px;");
-		outcomeTabletitle.setPadding(new Insets(10,5,5,0));
 		
-		Button getAllList = new Button();
-		getAllList.getStyleClass().add("getAllList");
-		getAllList.setMinWidth(30);
-		getAllList.setMinHeight(30);
-		getAllList.setPadding(new Insets(15,0,15,0));
-		getAllList.setOnAction(e -> {
-			loadTable.display(rb.getString("outcomes"), "outcomes");
-		});
-		
-		Button addListItem = new Button();
-		addListItem.getStyleClass().add("addListItem");
-		addListItem.setMinWidth(30);
-		addListItem.setMinHeight(30);
-		addListItem.setPadding(new Insets(15,0,15,0));
-		
-		Button removeListItem = new Button();
-		removeListItem.getStyleClass().add("removeListItem");
-		removeListItem.setMinWidth(30);
-		removeListItem.setMinHeight(30);
-		removeListItem.setPadding(new Insets(15,0,15,0));
-		
-		HBox tableTopLayout = new HBox();	
-		tableTopLayout.setSpacing(5);
-		tableTopLayout.getChildren().addAll(outcomeTabletitle, getAllList, addListItem, removeListItem);
-		
-		layout.getChildren().addAll(tableTopLayout, theTable());
+		layout.getChildren().addAll(theTable(f, l));
 		return layout;
 	}
 	
 	@SuppressWarnings("unchecked")
-	private TableView<outcomeItems> theTable(){
+	private TableView<outcomeItems> theTable(int f, int l){
 		dateColumn = new TableColumn<>(rb.getString("date"));
 		dateColumn.setCellValueFactory(new PropertyValueFactory<>("datex"));
+		dateColumn.setMinWidth(245);
 		
 		productNameColumn = new TableColumn<>(rb.getString("productName"));
 		productNameColumn.setCellValueFactory(new PropertyValueFactory<>("productname"));
+		productNameColumn.setMinWidth(245);
 		
 		whoSpentColumn = new TableColumn<>(rb.getString("spenter"));
 		whoSpentColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
-				
+		whoSpentColumn.setMinWidth(245);
+		
 		amountColumn = new TableColumn<>(rb.getString("amount"));
 		amountColumn.setCellValueFactory(new PropertyValueFactory<>("amount"));
-				
+		amountColumn.setMinWidth(245);		
 		
 		
 		table = new TableView<>();
-		table.setItems(getOutComes());
+		table.setItems(getOutComes(f, l));
 		table.getColumns().addAll(dateColumn, productNameColumn, whoSpentColumn, amountColumn);
 		table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 		
 		return table;
 	}
 	
-	public ObservableList<outcomeItems> getOutComes(){
+	public ObservableList<outcomeItems> getOutComes(int f, int l){
 		outcome out = new outcome();
-		ResultSet result = out.selectOutcome();
+		ResultSet result = out.selectOutcomeFromTo(f, l);
 		allOutcomes = FXCollections.observableArrayList();
 		try{
 			while(result.next()){
@@ -111,4 +80,5 @@ public class outcomeTable {
 		return allOutcomes;
 		
 	}
+	
 }

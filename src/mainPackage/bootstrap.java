@@ -1,7 +1,13 @@
 package mainPackage;
 
+import java.awt.Desktop;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.*;
 import javafx.application.*;
+import javafx.event.Event;
+import javafx.event.EventHandler;
 import javafx.geometry.*;
 import javafx.stage.*;
 import javafx.scene.*;
@@ -82,8 +88,8 @@ public class bootstrap extends Application {
 				int currencyIndex = combobox.getSelectionModel().getSelectedIndex() + 1; 
 				BarChart<String,Number> barChart2 = bar.createChart(newValue, currencyIndex);
 				vlayout.getChildren().add(barChart2);
-			}catch(Exception ex){
-				
+			}catch(Exception exCombo){
+				System.out.println(exCombo);
 			}
 		});
 		
@@ -120,12 +126,28 @@ public class bootstrap extends Application {
 		centerSideLayout.getChildren().add(chartLayout);
 		/* Center Layout END */
 		
-		
-		
+		/* CopyRight */
+		Label Copy = new Label(rb.getString("Copyright"));
+		Copy.setPadding(new Insets(10,10,10,10));
+		Copy.getStyleClass().add("copyright");
+		Copy.setOnMouseClicked(new EventHandler<Event>() {
+			@Override
+			public void handle(Event event) {
+				try {
+					Desktop.getDesktop().browse(new URI(rb.getString("CopyrightUrl")));
+				} catch (IOException | URISyntaxException e) {
+					e.printStackTrace();
+				}
+			}			
+		});
+		HBox copyrightLayout = new HBox();
+		copyrightLayout.getChildren().add(Copy);
+		copyrightLayout.getStyleClass().add("copyrightLabel");		
 		// add layouts to main root layout
 		root.setTop(layout);
 		root.setRight(rightSideLayout);
 		root.setCenter(centerSideLayout);
+		root.setBottom(copyrightLayout);
 		
 		
 		//create scene

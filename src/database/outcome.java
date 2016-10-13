@@ -16,4 +16,32 @@ public class outcome {
 			return null;
 		}
 	}
+	
+	public ResultSet selectOutcomeFromTo(int from, int limit){
+		Connection db = connectDb.db();
+		String query = "SELECT outcome.id as id, outcome.date as date, (SELECT name FROM familyMembers WHERE familyMembers.id=outcome.user_id) as username, (SELECT surname FROM familyMembers WHERE familyMembers.id=outcome.user_id) as usersurname, outcome.money as money, (SELECT name FROM currency WHERE currency.id=outcome.currency) as currency, outcome.desc as desc FROM outcome ORDER BY id ASC LIMIT "+from+","+limit;
+		try{
+			PreparedStatement prepare = db.prepareStatement(query);
+			ResultSet result = prepare.executeQuery();
+			return result;
+		}catch(Exception e){
+			System.out.println(e);
+			return null;
+		}
+	}
+	
+	public int countMembers(){
+		int number;
+		Connection db = connectDb.db();
+		String query = "SELECT COUNT(id) FROM outcome";
+		try{
+			PreparedStatement prepare = db.prepareStatement(query);
+			ResultSet result = prepare.executeQuery();
+			number = result.getInt(1);
+		}catch(Exception e){
+			System.out.println(e);
+			number = 0;
+		}
+		return number;
+	}
 }

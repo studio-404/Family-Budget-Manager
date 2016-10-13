@@ -54,6 +54,16 @@ public class navigation {
 		MenuItem exitx = new MenuItem(rb.getString("exits"));
 		menuElements[5].getItems().addAll(exitx);
 		
+		// actions
+		editMembers.setOnAction(e ->{
+			loadTable.display(rb.getString("familyMembers"), "familyMembers");
+		});
+		editIncome.setOnAction(e ->{
+			loadTable.display(rb.getString("incomes"), "incomes");
+		});
+		editOutcome.setOnAction(e -> {
+			loadTable.display(rb.getString("outcomes"), "outcomes");
+		});
 		exitx.setOnAction(e -> System.exit(0));
 		
 		for(int i = 0; i < menuElements.length; i++){

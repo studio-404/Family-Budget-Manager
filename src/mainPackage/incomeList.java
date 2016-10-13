@@ -6,92 +6,62 @@ import java.util.Date;
 import java.text.SimpleDateFormat;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.geometry.Insets;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import database.income;
 import java.sql.*;
 
-public class incomeTable {
+public class incomeList {
 	private ResourceBundle rb;
 	private TableView<incomeItems> table;
 	private VBox layout;
-	private Label incomeTabletitle;
 	private TableColumn<incomeItems, String> dateColumn;
 	private TableColumn<incomeItems, String> investorColumn;
 	private TableColumn<incomeItems, String> amountColumn;
 	private TableColumn<incomeItems, String> descColumn;
 	private ObservableList<incomeItems> allIncomes;
 	
-	public VBox theLayot(){
+	public VBox theLayot(int f, int l){
 		//resource
 		rb = ResourceBundle.getBundle("lang", Locale.getDefault());
 		layout = new VBox();
-		incomeTabletitle = new Label(rb.getString("incomes"));
-		incomeTabletitle.setStyle("-fx-font-size: 16px;");
-		incomeTabletitle.setPadding(new Insets(10,5,5,0));
 		
-		Button getAllList = new Button();
-		getAllList.getStyleClass().add("getAllList");
-		getAllList.setMinWidth(30);
-		getAllList.setMinHeight(30);
-		getAllList.setPadding(new Insets(15,0,15,0));
-		getAllList.setOnAction(e->{
-			loadTable.display(rb.getString("incomes"), "incomes");
-		});
-		
-		Button addListItem = new Button();
-		addListItem.getStyleClass().add("addListItem");
-		addListItem.setMinWidth(30);
-		addListItem.setMinHeight(30);
-		addListItem.setPadding(new Insets(15,0,15,0));
-		
-		Button removeListItem = new Button();
-		removeListItem.getStyleClass().add("removeListItem");
-		removeListItem.setMinWidth(30);
-		removeListItem.setMinHeight(30);
-		removeListItem.setPadding(new Insets(15,0,15,0));
-		
-		HBox tableTopLayout = new HBox();	
-		tableTopLayout.setSpacing(5);
-		tableTopLayout.getChildren().addAll(incomeTabletitle, getAllList, addListItem, removeListItem);
-		
-		
-		layout.getChildren().addAll(tableTopLayout, theTable());
+		layout.getChildren().addAll(theTable(f, l));
 		return layout;
 	}
 	
 	@SuppressWarnings("unchecked")
-	private TableView<incomeItems> theTable(){
+	private TableView<incomeItems> theTable(int f, int l){
 		
 		dateColumn = new TableColumn<>(rb.getString("date"));
 		dateColumn.setCellValueFactory(new PropertyValueFactory<>("datex"));
+		dateColumn.setMinWidth(245);
 		
 		descColumn = new TableColumn<>(rb.getString("productName"));
 		descColumn.setCellValueFactory(new PropertyValueFactory<>("desc"));
-				
+		descColumn.setMinWidth(245);
+		
 		investorColumn = new TableColumn<>(rb.getString("investor"));
 		investorColumn.setCellValueFactory(new PropertyValueFactory<>("investor"));
-				
+		investorColumn.setMinWidth(245);	
+		
 		amountColumn = new TableColumn<>(rb.getString("amount"));
 		amountColumn.setCellValueFactory(new PropertyValueFactory<>("amount"));
+		amountColumn.setMinWidth(245);
 		
 		table = new TableView<>();
-		table.setItems(getIncomes());
+		table.setItems(getIncomes(f, l));
 		table.getColumns().addAll(dateColumn, descColumn, investorColumn, amountColumn);
 		table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 		
 		return table;
 	}
 	
-	public ObservableList<incomeItems> getIncomes(){
+	public ObservableList<incomeItems> getIncomes(int f, int l){
 		income in = new income();
-		ResultSet result = in.selectIncome();
+		ResultSet result = in.selectIncomeFromTo(f, l);
 		allIncomes = FXCollections.observableArrayList();
 		
 		//long unixTime = System.currentTimeMillis() / 1000L;
@@ -115,4 +85,5 @@ public class incomeTable {
 		return allIncomes;
 		
 	}
+	
 }
