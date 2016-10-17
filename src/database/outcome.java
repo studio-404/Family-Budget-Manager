@@ -44,4 +44,18 @@ public class outcome {
 		}
 		return number;
 	}
+	
+	public int removeMember(int i){
+		Connection db = connectDb.db();
+		String query = "DELETE FROM outcome WHERE id="+i;
+		try{
+			PreparedStatement prepare = db.prepareStatement(query);
+			prepare.executeUpdate();
+			return 1;
+		}catch(Exception e){
+			System.out.println(e);
+			return 0;
+		}
+		
+	}
 }

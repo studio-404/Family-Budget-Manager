@@ -70,4 +70,18 @@ public class familyMembers {
 			return null;
 		}
 	}
+	
+	public int removeMember(int i){
+		Connection db = connectDb.db();
+		String query = "DELETE FROM familymembers WHERE id="+i;
+		try{
+			PreparedStatement prepare = db.prepareStatement(query);
+			prepare.executeUpdate();
+			return 1;
+		}catch(Exception e){
+			System.out.println(e);
+			return 0;
+		}
+		
+	}
 }

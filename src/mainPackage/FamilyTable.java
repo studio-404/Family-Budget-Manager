@@ -12,6 +12,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import database.familyMembers;
 import java.sql.*;
 
@@ -55,9 +56,33 @@ public class FamilyTable {
 		removeListItem.setMinHeight(30);
 		removeListItem.setPadding(new Insets(15,0,15,0));
 		
+		
+		removeListItem.setOnAction(e -> {
+			FamilyMembers fm = table.getSelectionModel().getSelectedItem();	
+			int selectedIndex = table.getSelectionModel().getSelectedIndex();
+			int selectedItemId = fm.getId();
+			
+			Button actionButton = new Button(rb.getString("delete"));
+			actionButton.setOnAction(ev -> {
+				familyMembers fmDB = new familyMembers();
+				int rm = fmDB.removeMember(selectedItemId);
+				if(rm == 1){
+					alertBox.display(rb.getString("message"), rb.getString("successDone"));
+					table.getItems().remove(selectedIndex);
+				}else{
+					alertBox.display(rb.getString("message"), rb.getString("errorHappend"));
+				}
+				Stage stage = (Stage) actionButton.getScene().getWindow();
+			    stage.close();			    
+			});
+			comfirmBox.display(rb.getString("message"), rb.getString("WULTdelete"), actionButton);
+		});
+		
 		HBox tableTopLayout = new HBox();	
 		tableTopLayout.setSpacing(5);
 		tableTopLayout.getChildren().addAll(FamilyTabletitle, getAllList, addListItem, removeListItem);
+		
+		
 		
 		layout.getChildren().addAll(tableTopLayout, theTable());
 		return layout;
@@ -79,6 +104,7 @@ public class FamilyTable {
 		
 		table = new TableView<>();
 		table.setItems(getFamilyMembers());
+		
 		table.getColumns().addAll(idColumn, nameColumn, surnameColumn, numberColumn);
 		table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 		

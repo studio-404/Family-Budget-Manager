@@ -14,6 +14,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import database.income;
 import java.sql.*;
 
@@ -22,6 +23,7 @@ public class incomeTable {
 	private TableView<incomeItems> table;
 	private VBox layout;
 	private Label incomeTabletitle;
+	private TableColumn<incomeItems, Integer> idColumn;
 	private TableColumn<incomeItems, String> dateColumn;
 	private TableColumn<incomeItems, String> investorColumn;
 	private TableColumn<incomeItems, String> amountColumn;
@@ -57,6 +59,28 @@ public class incomeTable {
 		removeListItem.setMinHeight(30);
 		removeListItem.setPadding(new Insets(15,0,15,0));
 		
+		removeListItem.setOnAction(e -> {
+			incomeItems iI = table.getSelectionModel().getSelectedItem();	
+			int selectedIndex = table.getSelectionModel().getSelectedIndex();
+			int selectedItemId = iI.getId();
+			
+			Button actionButton = new Button(rb.getString("delete"));
+			actionButton.setOnAction(ev -> {
+				income inDB = new income();
+				int rm = inDB.removeMember(selectedItemId);
+				if(rm == 1){
+					alertBox.display(rb.getString("message"), rb.getString("successDone"));
+					table.getItems().remove(selectedIndex);
+				}else{
+					alertBox.display(rb.getString("message"), rb.getString("errorHappend"));
+				}
+				Stage stage = (Stage) actionButton.getScene().getWindow();
+			    stage.close();			    
+			});
+			comfirmBox.display(rb.getString("message"), rb.getString("WULTdelete"), actionButton);
+		});
+		
+		
 		HBox tableTopLayout = new HBox();	
 		tableTopLayout.setSpacing(5);
 		tableTopLayout.getChildren().addAll(incomeTabletitle, getAllList, addListItem, removeListItem);
@@ -68,6 +92,9 @@ public class incomeTable {
 	
 	@SuppressWarnings("unchecked")
 	private TableView<incomeItems> theTable(){
+		
+		idColumn = new TableColumn<>(rb.getString("id"));
+		idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
 		
 		dateColumn = new TableColumn<>(rb.getString("date"));
 		dateColumn.setCellValueFactory(new PropertyValueFactory<>("datex"));
@@ -83,7 +110,7 @@ public class incomeTable {
 		
 		table = new TableView<>();
 		table.setItems(getIncomes());
-		table.getColumns().addAll(dateColumn, descColumn, investorColumn, amountColumn);
+		table.getColumns().addAll(idColumn, dateColumn, descColumn, investorColumn, amountColumn);
 		table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 		
 		return table;
@@ -101,7 +128,8 @@ public class incomeTable {
 			while(result.next()){
 				Date date=new Date((long)Integer.parseInt(result.getString(2))*1000);
 				SimpleDateFormat formatDate = new SimpleDateFormat("dd-MM-yyyy");
-				allIncomes.add(new incomeItems(						
+				allIncomes.add(new incomeItems(	
+						result.getInt(1),
 						formatDate.format(date),
 						result.getString(3) + " " +result.getString(4), 
 						result.getString(5) + " " +result.getString(6),

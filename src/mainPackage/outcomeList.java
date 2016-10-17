@@ -17,6 +17,7 @@ public class outcomeList {
 	private ResourceBundle rb;
 	private TableView<outcomeItems> table;
 	private VBox layout;
+	private TableColumn<outcomeItems, Integer> idColumn;
 	private TableColumn<outcomeItems, String> dateColumn;
 	private TableColumn<outcomeItems, String> productNameColumn;
 	private TableColumn<outcomeItems, String> whoSpentColumn;
@@ -34,26 +35,30 @@ public class outcomeList {
 	
 	@SuppressWarnings("unchecked")
 	private TableView<outcomeItems> theTable(int f, int l){
+		idColumn = new TableColumn<>(rb.getString("id"));
+		idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
+		idColumn.setMinWidth(196);
+		
 		dateColumn = new TableColumn<>(rb.getString("date"));
 		dateColumn.setCellValueFactory(new PropertyValueFactory<>("datex"));
-		dateColumn.setMinWidth(245);
+		dateColumn.setMinWidth(196);
 		
 		productNameColumn = new TableColumn<>(rb.getString("productName"));
 		productNameColumn.setCellValueFactory(new PropertyValueFactory<>("productname"));
-		productNameColumn.setMinWidth(245);
+		productNameColumn.setMinWidth(196);
 		
 		whoSpentColumn = new TableColumn<>(rb.getString("spenter"));
 		whoSpentColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
-		whoSpentColumn.setMinWidth(245);
+		whoSpentColumn.setMinWidth(196);
 		
 		amountColumn = new TableColumn<>(rb.getString("amount"));
 		amountColumn.setCellValueFactory(new PropertyValueFactory<>("amount"));
-		amountColumn.setMinWidth(245);		
+		amountColumn.setMinWidth(196);		
 		
 		
 		table = new TableView<>();
 		table.setItems(getOutComes(f, l));
-		table.getColumns().addAll(dateColumn, productNameColumn, whoSpentColumn, amountColumn);
+		table.getColumns().addAll(idColumn, dateColumn, productNameColumn, whoSpentColumn, amountColumn);
 		table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 		
 		return table;
@@ -68,6 +73,7 @@ public class outcomeList {
 				Date date=new Date((long)Integer.parseInt(result.getString(2))*1000);
 				SimpleDateFormat formatDate = new SimpleDateFormat("dd-MM-yyyy");
 				allOutcomes.add(new outcomeItems(
+						result.getInt(1),
 						formatDate.format(date),
 						result.getString(7),
 						result.getString(3) + " " +result.getString(4), 

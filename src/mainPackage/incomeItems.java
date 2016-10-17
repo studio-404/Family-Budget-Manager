@@ -1,6 +1,7 @@
 package mainPackage;
 
 public class incomeItems {
+	private int id;
 	private String datex;
 	private String investor;
 	private String amount;
@@ -8,6 +9,7 @@ public class incomeItems {
 	
 	
 	public incomeItems(){
+		this.id = 0;
 		this.datex = "";
 		this.investor = "";
 		this.amount = "";
@@ -15,13 +17,22 @@ public class incomeItems {
 		
 	}
 	
-	public incomeItems(String d, String in, String a, String desc){
+	public incomeItems(int i, String d, String in, String a, String desc){
+		this.id = i;
 		this.datex = d;
 		this.investor = in;
 		this.amount = a;
 		this.desc = desc;
 	}
 	
+	
+	public int getId(){
+		return id;
+	}
+	
+	public void setId(int i){
+		this.id = i;
+	}
 	
 	public String getDesc(){
 		return desc;

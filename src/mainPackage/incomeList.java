@@ -17,6 +17,7 @@ public class incomeList {
 	private ResourceBundle rb;
 	private TableView<incomeItems> table;
 	private VBox layout;
+	private TableColumn<incomeItems, Integer> idColumn;
 	private TableColumn<incomeItems, String> dateColumn;
 	private TableColumn<incomeItems, String> investorColumn;
 	private TableColumn<incomeItems, String> amountColumn;
@@ -35,25 +36,29 @@ public class incomeList {
 	@SuppressWarnings("unchecked")
 	private TableView<incomeItems> theTable(int f, int l){
 		
+		idColumn = new TableColumn<>(rb.getString("id"));
+		idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
+		idColumn.setMinWidth(196);
+		
 		dateColumn = new TableColumn<>(rb.getString("date"));
 		dateColumn.setCellValueFactory(new PropertyValueFactory<>("datex"));
-		dateColumn.setMinWidth(245);
+		dateColumn.setMinWidth(196);
 		
 		descColumn = new TableColumn<>(rb.getString("productName"));
 		descColumn.setCellValueFactory(new PropertyValueFactory<>("desc"));
-		descColumn.setMinWidth(245);
+		descColumn.setMinWidth(196);
 		
 		investorColumn = new TableColumn<>(rb.getString("investor"));
 		investorColumn.setCellValueFactory(new PropertyValueFactory<>("investor"));
-		investorColumn.setMinWidth(245);	
+		investorColumn.setMinWidth(196);	
 		
 		amountColumn = new TableColumn<>(rb.getString("amount"));
 		amountColumn.setCellValueFactory(new PropertyValueFactory<>("amount"));
-		amountColumn.setMinWidth(245);
+		amountColumn.setMinWidth(196);
 		
 		table = new TableView<>();
 		table.setItems(getIncomes(f, l));
-		table.getColumns().addAll(dateColumn, descColumn, investorColumn, amountColumn);
+		table.getColumns().addAll(idColumn, dateColumn, descColumn, investorColumn, amountColumn);
 		table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 		
 		return table;
@@ -71,7 +76,8 @@ public class incomeList {
 			while(result.next()){
 				Date date=new Date((long)Integer.parseInt(result.getString(2))*1000);
 				SimpleDateFormat formatDate = new SimpleDateFormat("dd-MM-yyyy");
-				allIncomes.add(new incomeItems(						
+				allIncomes.add(new incomeItems(	
+						result.getInt(1),
 						formatDate.format(date),
 						result.getString(3) + " " +result.getString(4), 
 						result.getString(5) + " " +result.getString(6),

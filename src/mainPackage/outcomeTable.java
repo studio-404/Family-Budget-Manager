@@ -14,6 +14,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import database.outcome;
 import java.sql.*;
 import java.text.SimpleDateFormat;
@@ -23,6 +24,7 @@ public class outcomeTable {
 	private TableView<outcomeItems> table;
 	private VBox layout;
 	private Label outcomeTabletitle;
+	private TableColumn<outcomeItems, Integer> idColumn;
 	private TableColumn<outcomeItems, String> dateColumn;
 	private TableColumn<outcomeItems, String> productNameColumn;
 	private TableColumn<outcomeItems, String> whoSpentColumn;
@@ -58,6 +60,27 @@ public class outcomeTable {
 		removeListItem.setMinHeight(30);
 		removeListItem.setPadding(new Insets(15,0,15,0));
 		
+		removeListItem.setOnAction(e -> {
+			outcomeItems oI = table.getSelectionModel().getSelectedItem();	
+			int selectedIndex = table.getSelectionModel().getSelectedIndex();
+			int selectedItemId = oI.getId();
+			
+			Button actionButton = new Button(rb.getString("delete"));
+			actionButton.setOnAction(ev -> {
+				outcome otDB = new outcome();
+				int rm = otDB.removeMember(selectedItemId);
+				if(rm == 1){
+					alertBox.display(rb.getString("message"), rb.getString("successDone"));
+					table.getItems().remove(selectedIndex);
+				}else{
+					alertBox.display(rb.getString("message"), rb.getString("errorHappend"));
+				}
+				Stage stage = (Stage) actionButton.getScene().getWindow();
+			    stage.close();			    
+			});
+			comfirmBox.display(rb.getString("message"), rb.getString("WULTdelete"), actionButton);
+		});
+		
 		HBox tableTopLayout = new HBox();	
 		tableTopLayout.setSpacing(5);
 		tableTopLayout.getChildren().addAll(outcomeTabletitle, getAllList, addListItem, removeListItem);
@@ -68,6 +91,9 @@ public class outcomeTable {
 	
 	@SuppressWarnings("unchecked")
 	private TableView<outcomeItems> theTable(){
+		idColumn = new TableColumn<>(rb.getString("id"));
+		idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
+		
 		dateColumn = new TableColumn<>(rb.getString("date"));
 		dateColumn.setCellValueFactory(new PropertyValueFactory<>("datex"));
 		
@@ -84,7 +110,7 @@ public class outcomeTable {
 		
 		table = new TableView<>();
 		table.setItems(getOutComes());
-		table.getColumns().addAll(dateColumn, productNameColumn, whoSpentColumn, amountColumn);
+		table.getColumns().addAll(idColumn, dateColumn, productNameColumn, whoSpentColumn, amountColumn);
 		table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 		
 		return table;
@@ -99,6 +125,7 @@ public class outcomeTable {
 				Date date=new Date((long)Integer.parseInt(result.getString(2))*1000);
 				SimpleDateFormat formatDate = new SimpleDateFormat("dd-MM-yyyy");
 				allOutcomes.add(new outcomeItems(
+						result.getInt(1),
 						formatDate.format(date),
 						result.getString(7),
 						result.getString(3) + " " +result.getString(4), 

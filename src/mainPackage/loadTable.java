@@ -17,7 +17,6 @@ public class loadTable {
 		//resource
 		ResourceBundle rb = ResourceBundle.getBundle("lang", Locale.getDefault());
 		ObservableList<String> pageOptions = FXCollections.observableArrayList();
-		ObservableList<String> quentityOptions = FXCollections.observableArrayList();
 		ComboBox<String> pageCombo;
 		Stage window = new Stage();
 		window.setTitle(title);
@@ -38,9 +37,7 @@ public class loadTable {
 		
 		// top elements
 		Label page = new Label(rb.getString("page")+":");		
-		Label quentity = new Label(rb.getString("quentity")+":");
 		page.setMinHeight(20);
-		quentity.setMinHeight(20);
 		
 		Button add = new Button(rb.getString("add"));
 		add.setMinHeight(20);
@@ -49,20 +46,14 @@ public class loadTable {
 		Button delete = new Button(rb.getString("delete"));
 		delete.setMinHeight(20);
 		
-		quentityOptions.add("10");
-		quentityOptions.add("20");
-		quentityOptions.add("50");
-		quentityOptions.add("100");
-		ComboBox<String> quentityCombo = new ComboBox<String>(quentityOptions);
-		quentityCombo.setValue("10");
-		
+
 		// center elements
 		switch(typex){
 			case "familyMembers":
 				// databse 
 				familyMembers familyMembers = new familyMembers();
 				int all = familyMembers.countMembers();
-				int quentityVal = Integer.parseInt(quentityCombo.getValue());
+				int quentityVal = 20;
 				int forEchVal = ((int) Math.ceil(((double) all / quentityVal)));
 				if(forEchVal<=0){ forEchVal=1;}
 
@@ -70,14 +61,14 @@ public class loadTable {
 					pageOptions.add(i+"");
 				}
 				FamilyMemberList centerTable = new FamilyMemberList();
-				VBox centerTabelLayout = centerTable.theLayot(0,10);
+				VBox centerTabelLayout = centerTable.theLayot(0,quentityVal);
 				centerLayout.getChildren().add(centerTabelLayout);
 			break;
 			case "incomes":
 				// databse 
 				income income = new income();
 				int all2 = income.countMembers();
-				int quentityVal2 = Integer.parseInt(quentityCombo.getValue());
+				int quentityVal2 = 20;
 				int forEchVal2 = ((int) Math.ceil(((double) all2 / quentityVal2)));
 				if(forEchVal2<=0){ forEchVal2=1;}
 				
@@ -86,14 +77,14 @@ public class loadTable {
 				}
 				
 				incomeList centerTable2 = new incomeList();
-				VBox centerTabelLayout2 = centerTable2.theLayot(0, 10);
+				VBox centerTabelLayout2 = centerTable2.theLayot(0, quentityVal2);
 				centerLayout.getChildren().add(centerTabelLayout2);
 			break;
 			case "outcomes":
 				// databse 
 				outcome outcome = new outcome();
 				int all3 = outcome.countMembers();
-				int quentityVal3 = Integer.parseInt(quentityCombo.getValue());
+				int quentityVal3 = 20;
 				int forEchVal3 = ((int) Math.ceil(((double) all3 / quentityVal3)));
 				if(forEchVal3<=0){ forEchVal3=1;}
 				
@@ -102,7 +93,7 @@ public class loadTable {
 				}
 				
 				outcomeList centerTable3 = new outcomeList();
-				VBox centerTabelLayout3 = centerTable3.theLayot(0, 10);
+				VBox centerTabelLayout3 = centerTable3.theLayot(0, quentityVal3);
 				centerLayout.getChildren().add(centerTabelLayout3);
 			break;
 		}
@@ -116,7 +107,7 @@ public class loadTable {
 		pageCombo.getSelectionModel().selectedItemProperty().addListener( (v, oldValue, newValue) -> {
 			try{
 				root.getChildren().remove(1);
-				int quentity_ = Integer.parseInt(quentityCombo.getValue());
+				int quentity_ = 20;
 				int page_ = pageCombo.getSelectionModel().getSelectedIndex() * quentity_; 
 				
 				HBox centerLayout_ = new HBox();
@@ -133,14 +124,13 @@ public class loadTable {
 					VBox centerTabelLayout3_ = centerTable3_.theLayot(page_,quentity_);
 					centerLayout_.getChildren().add(centerTabelLayout3_);
 				}
-				System.out.println("f: "+page_+" l:"+quentity_);
 				root.getChildren().add(centerLayout_);
 			}catch(Exception ex){
 				System.out.println(ex);
 			}
 		});
 		
-		topLayout.getChildren().addAll(page, pageCombo, quentity, quentityCombo, add, edit, delete);
+		topLayout.getChildren().addAll(page, pageCombo, add, edit, delete);
 		
 		
 		root.getChildren().addAll(topLayout, centerLayout);
