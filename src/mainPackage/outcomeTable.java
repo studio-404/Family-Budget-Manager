@@ -10,6 +10,7 @@ import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
@@ -54,11 +55,32 @@ public class outcomeTable {
 		addListItem.setMinHeight(30);
 		addListItem.setPadding(new Insets(15,0,15,0));
 		
+		addListItem.setOnAction(e ->{
+			outcomeAdd.display();
+		});
+		
+//		Button editListItem = new Button();
+//		editListItem.getStyleClass().add("editListItem");
+//		editListItem.setMinWidth(30);
+//		editListItem.setMinHeight(30);
+//		editListItem.setPadding(new Insets(15,0,15,0));
+		
 		Button removeListItem = new Button();
 		removeListItem.getStyleClass().add("removeListItem");
 		removeListItem.setMinWidth(30);
 		removeListItem.setMinHeight(30);
 		removeListItem.setPadding(new Insets(15,0,15,0));
+		
+		Button reloadList = new Button();
+		reloadList.getStyleClass().add("reloadList");
+		reloadList.setMinWidth(30);
+		reloadList.setMinHeight(30);
+		reloadList.setPadding(new Insets(15,0,15,0));
+		
+		reloadList.setOnAction(e ->{
+			layout.getChildren().remove(1);
+			layout.getChildren().add(1, theTable());
+		});
 		
 		removeListItem.setOnAction(e -> {
 			outcomeItems oI = table.getSelectionModel().getSelectedItem();	
@@ -83,7 +105,7 @@ public class outcomeTable {
 		
 		HBox tableTopLayout = new HBox();	
 		tableTopLayout.setSpacing(5);
-		tableTopLayout.getChildren().addAll(outcomeTabletitle, getAllList, addListItem, removeListItem);
+		tableTopLayout.getChildren().addAll(outcomeTabletitle, getAllList, reloadList, addListItem, removeListItem);
 		
 		layout.getChildren().addAll(tableTopLayout, theTable());
 		return layout;
@@ -113,6 +135,17 @@ public class outcomeTable {
 		table.getColumns().addAll(idColumn, dateColumn, productNameColumn, whoSpentColumn, amountColumn);
 		table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 		
+		table.setRowFactory( tv -> {
+		    TableRow<outcomeItems> row = new TableRow<>();
+		    row.setOnMouseClicked(event -> {
+		        if (event.getClickCount() == 2 && (! row.isEmpty()) ) {
+		        	outcomeItems rowData = row.getItem();
+		            mainPackage.editOutcome.display(rowData.getId());
+		        }
+		    });
+		    return row ;
+		});
+		
 		return table;
 	}
 	
@@ -123,7 +156,7 @@ public class outcomeTable {
 		try{
 			while(result.next()){
 				Date date=new Date((long)Integer.parseInt(result.getString(2))*1000);
-				SimpleDateFormat formatDate = new SimpleDateFormat("dd-MM-yyyy");
+				SimpleDateFormat formatDate = new SimpleDateFormat("dd/MM/yyyy");
 				allOutcomes.add(new outcomeItems(
 						result.getInt(1),
 						formatDate.format(date),

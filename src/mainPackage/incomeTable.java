@@ -10,6 +10,7 @@ import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
@@ -53,11 +54,26 @@ public class incomeTable {
 		addListItem.setMinHeight(30);
 		addListItem.setPadding(new Insets(15,0,15,0));
 		
+		addListItem.setOnAction(e ->{
+			incomeAdd.display();
+		});
+		
 		Button removeListItem = new Button();
 		removeListItem.getStyleClass().add("removeListItem");
 		removeListItem.setMinWidth(30);
 		removeListItem.setMinHeight(30);
 		removeListItem.setPadding(new Insets(15,0,15,0));
+		
+		Button reloadList = new Button();
+		reloadList.getStyleClass().add("reloadList");
+		reloadList.setMinWidth(30);
+		reloadList.setMinHeight(30);
+		reloadList.setPadding(new Insets(15,0,15,0));
+		
+		reloadList.setOnAction(e ->{
+			layout.getChildren().remove(1);
+			layout.getChildren().add(1, theTable());
+		});
 		
 		removeListItem.setOnAction(e -> {
 			incomeItems iI = table.getSelectionModel().getSelectedItem();	
@@ -83,7 +99,7 @@ public class incomeTable {
 		
 		HBox tableTopLayout = new HBox();	
 		tableTopLayout.setSpacing(5);
-		tableTopLayout.getChildren().addAll(incomeTabletitle, getAllList, addListItem, removeListItem);
+		tableTopLayout.getChildren().addAll(incomeTabletitle, getAllList, reloadList, addListItem, removeListItem);
 		
 		
 		layout.getChildren().addAll(tableTopLayout, theTable());
@@ -113,6 +129,18 @@ public class incomeTable {
 		table.getColumns().addAll(idColumn, dateColumn, descColumn, investorColumn, amountColumn);
 		table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 		
+		table.setRowFactory( tv -> {
+		    TableRow<incomeItems> row = new TableRow<>();
+		    row.setOnMouseClicked(event -> {
+		        if (event.getClickCount() == 2 && (! row.isEmpty()) ) {
+		        	incomeItems rowData = row.getItem();
+		        	System.out.println(rowData.getId());
+		            mainPackage.editIncome.display(rowData.getId());
+		        }
+		    });
+		    return row ;
+		});
+		
 		return table;
 	}
 	
@@ -127,7 +155,7 @@ public class incomeTable {
 		try{
 			while(result.next()){
 				Date date=new Date((long)Integer.parseInt(result.getString(2))*1000);
-				SimpleDateFormat formatDate = new SimpleDateFormat("dd-MM-yyyy");
+				SimpleDateFormat formatDate = new SimpleDateFormat("dd/MM/yyyy");
 				allIncomes.add(new incomeItems(	
 						result.getInt(1),
 						formatDate.format(date),

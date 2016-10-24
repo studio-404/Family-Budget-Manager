@@ -6,6 +6,7 @@ import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.VBox;
@@ -15,7 +16,7 @@ import java.text.SimpleDateFormat;
 
 public class outcomeList {
 	private ResourceBundle rb;
-	private TableView<outcomeItems> table;
+	public TableView<outcomeItems> table;
 	private VBox layout;
 	private TableColumn<outcomeItems, Integer> idColumn;
 	private TableColumn<outcomeItems, String> dateColumn;
@@ -60,6 +61,17 @@ public class outcomeList {
 		table.setItems(getOutComes(f, l));
 		table.getColumns().addAll(idColumn, dateColumn, productNameColumn, whoSpentColumn, amountColumn);
 		table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+		
+		table.setRowFactory( tv -> {
+		    TableRow<outcomeItems> row = new TableRow<>();
+		    row.setOnMouseClicked(event -> {
+		        if (event.getClickCount() == 2 && (! row.isEmpty()) ) {
+		        	outcomeItems rowData = row.getItem();
+		            mainPackage.editOutcome.display(rowData.getId());
+		        }
+		    });
+		    return row ;
+		});
 		
 		return table;
 	}

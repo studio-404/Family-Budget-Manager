@@ -19,51 +19,65 @@ public class navigation {
 		
 		mainMenu = new MenuBar();
 		menuElements = new Menu[]{
-			new Menu(rb.getString("menuMain")),
 			new Menu(rb.getString("menuFamilyMembers")),
 			new Menu(rb.getString("income")),
 			new Menu(rb.getString("outcomes")),
-			new Menu(rb.getString("credits")),
 			new Menu(rb.getString("options"))
 		};
 		
 		// family members sub menu
 		MenuItem addMember = new MenuItem(rb.getString("addMember"));
-		MenuItem editMembers = new MenuItem(rb.getString("edit"));
-		menuElements[1].getItems().addAll(addMember, editMembers);
+		MenuItem editMembers = new MenuItem(rb.getString("list"));
+		menuElements[0].getItems().addAll(addMember, editMembers);
 		
 		//incomes sub menu
 		MenuItem addIncome = new MenuItem(rb.getString("addIncome"));
-		MenuItem editIncome = new MenuItem(rb.getString("edit"));
-		MenuItem incomeStats = new MenuItem(rb.getString("stats"));
-		menuElements[2].getItems().addAll(addIncome, editIncome, incomeStats);
+		MenuItem editIncome = new MenuItem(rb.getString("list"));
+		menuElements[1].getItems().addAll(addIncome, editIncome);
 		
 		//outcomes sub menu
 		MenuItem addOutcome = new MenuItem(rb.getString("addOutcome"));
-		MenuItem editOutcome = new MenuItem(rb.getString("edit"));
-		MenuItem outcomeStats = new MenuItem(rb.getString("stats"));
-		menuElements[3].getItems().addAll(addOutcome, editOutcome, outcomeStats);
+		MenuItem editOutcome = new MenuItem(rb.getString("list"));
+		menuElements[2].getItems().addAll(addOutcome, editOutcome);
 		
-		// loans sub menu
-		MenuItem addLoan = new MenuItem(rb.getString("addLoan"));
-		MenuItem editLoan = new MenuItem(rb.getString("edit"));
-		MenuItem loanStats = new MenuItem(rb.getString("stats"));
-		menuElements[4].getItems().addAll(addLoan, editLoan, loanStats);
 		
 		// options
+		MenuItem incomeList = new MenuItem(rb.getString("incomeList"));
+		MenuItem outcomeList = new MenuItem(rb.getString("outcomeList"));
 		MenuItem exitx = new MenuItem(rb.getString("exits"));
-		menuElements[5].getItems().addAll(exitx);
+		menuElements[3].getItems().addAll(incomeList, outcomeList, exitx);
 		
 		// actions
+		addMember.setOnAction(e ->{
+			FamilyAddMember.display();
+		});
 		editMembers.setOnAction(e ->{
 			loadTable.display(rb.getString("familyMembers"), "familyMembers");
+		});
+		
+		
+		addIncome.setOnAction(e ->{
+			incomeAdd.display();
 		});
 		editIncome.setOnAction(e ->{
 			loadTable.display(rb.getString("incomes"), "incomes");
 		});
+		
+		addOutcome.setOnAction(e ->{
+			outcomeAdd.display();
+		});
 		editOutcome.setOnAction(e -> {
 			loadTable.display(rb.getString("outcomes"), "outcomes");
 		});
+		
+		incomeList.setOnAction(e->{
+			productBox.display(rb.getString("incomeList"));			
+		});
+		
+		outcomeList.setOnAction(e ->{
+			productBox2.display(rb.getString("outcomeList"));	
+		});
+		
 		exitx.setOnAction(e -> System.exit(0));
 		
 		for(int i = 0; i < menuElements.length; i++){

@@ -72,7 +72,7 @@ public class bootstrap extends Application {
 		PieChart theChart = pie.makeChart(rb.getString("mainCurrency"), 1);
 
 		currencyCombobox curCom = new currencyCombobox();
-		ComboBox<String> combobox = curCom.select();
+		ComboBox<String> combobox = curCom.select(350);
 		
 		bar bar = new bar();
 		BarChart<String,Number> barChart = bar.createChart(rb.getString("mainCurrency"), 1);
@@ -93,7 +93,7 @@ public class bootstrap extends Application {
 			}
 		});
 		
-		ComboBox<String> combobox2 = curCom.select();
+		ComboBox<String> combobox2 = curCom.select(350);
 		VBox vlayout2 = new VBox();
 		VBox.setMargin(combobox2, new Insets(15,10,0,10));
 		vlayout2.getStyleClass().add("chartComboBoxLayout");

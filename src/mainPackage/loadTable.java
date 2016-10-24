@@ -13,11 +13,13 @@ import javafx.scene.layout.*;
 import database.*;
 
 public class loadTable {
+	public static Button delete;
+	
 	public static void display(String title, String typex){
 		//resource
 		ResourceBundle rb = ResourceBundle.getBundle("lang", Locale.getDefault());
 		ObservableList<String> pageOptions = FXCollections.observableArrayList();
-		ComboBox<String> pageCombo;
+		ComboBox<String> pageCombo = new ComboBox<String>();
 		Stage window = new Stage();
 		window.setTitle(title);
 		window.initModality(Modality.APPLICATION_MODAL);
@@ -41,12 +43,13 @@ public class loadTable {
 		
 		Button add = new Button(rb.getString("add"));
 		add.setMinHeight(20);
-		Button edit = new Button(rb.getString("edit"));
-		edit.setMinHeight(20);
-		Button delete = new Button(rb.getString("delete"));
+		
+		Button reloadTable = new Button(rb.getString("reload"));
+		reloadTable.setMinHeight(20);
+
+		delete = new Button(rb.getString("delete"));
 		delete.setMinHeight(20);
 		
-
 		// center elements
 		switch(typex){
 			case "familyMembers":
@@ -57,11 +60,44 @@ public class loadTable {
 				int forEchVal = ((int) Math.ceil(((double) all / quentityVal)));
 				if(forEchVal<=0){ forEchVal=1;}
 
-				for(int i = 1; i<=forEchVal; i++){
+				for(int i = 1; i<=forEchVal; i++){ 
 					pageOptions.add(i+"");
 				}
 				FamilyMemberList centerTable = new FamilyMemberList();
 				VBox centerTabelLayout = centerTable.theLayot(0,quentityVal);
+				
+				add.setOnAction(e ->{
+					FamilyAddMember.display();
+				});
+				
+				reloadTable.setOnAction(e ->{
+					centerTabelLayout.getChildren().remove(0);
+					centerTabelLayout.getChildren().add(0, centerTable.theLayot(0, quentityVal));
+					pageCombo.setValue("1");
+				});
+				
+				delete.setOnAction(e -> {
+					TableView<FamilyMembers> table = centerTable.table;
+					FamilyMembers fm = table.getSelectionModel().getSelectedItem();	
+					int selectedIndex = table.getSelectionModel().getSelectedIndex();
+					int selectedItemId = fm.getId();
+					
+					Button actionButton = new Button(rb.getString("delete"));
+					actionButton.setOnAction(ev -> {
+						familyMembers fmDB = new familyMembers();
+						int rm = fmDB.removeMember(selectedItemId);
+						if(rm == 1){
+							alertBox.display(rb.getString("message"), rb.getString("successDone"));
+							table.getItems().remove(selectedIndex);
+						}else{
+							alertBox.display(rb.getString("message"), rb.getString("errorHappend"));
+						}
+						Stage stage = (Stage) actionButton.getScene().getWindow();
+					    stage.close();			    
+					});
+					comfirmBox.display(rb.getString("message"), rb.getString("WULTdelete"), actionButton);
+				});
+				
 				centerLayout.getChildren().add(centerTabelLayout);
 			break;
 			case "incomes":
@@ -78,6 +114,40 @@ public class loadTable {
 				
 				incomeList centerTable2 = new incomeList();
 				VBox centerTabelLayout2 = centerTable2.theLayot(0, quentityVal2);
+				
+				add.setOnAction(e ->{
+					incomeAdd.display();
+				});
+				
+				reloadTable.setOnAction(e ->{
+					centerTabelLayout2.getChildren().remove(0);
+					centerTabelLayout2.getChildren().add(0, centerTable2.theLayot(0, quentityVal2));
+					pageCombo.setValue("1");
+				});
+				
+				delete.setOnAction(e -> {
+					TableView<incomeItems> table = centerTable2.table;
+					incomeItems fm = table.getSelectionModel().getSelectedItem();	
+					int selectedIndex = table.getSelectionModel().getSelectedIndex();
+					int selectedItemId = fm.getId();
+					System.out.println(selectedIndex+" - "+selectedItemId);
+					
+					Button actionButton = new Button(rb.getString("delete"));
+					actionButton.setOnAction(ev -> {
+						income inDB = new income();
+						int rm = inDB.removeMember(selectedItemId);
+						if(rm == 1){
+							alertBox.display(rb.getString("message"), rb.getString("successDone"));
+							table.getItems().remove(selectedIndex);
+						}else{
+							alertBox.display(rb.getString("message"), rb.getString("errorHappend"));
+						}
+						Stage stage = (Stage) actionButton.getScene().getWindow();
+					    stage.close();			    
+					});
+					comfirmBox.display(rb.getString("message"), rb.getString("WULTdelete"), actionButton);
+				});
+				
 				centerLayout.getChildren().add(centerTabelLayout2);
 			break;
 			case "outcomes":
@@ -94,11 +164,44 @@ public class loadTable {
 				
 				outcomeList centerTable3 = new outcomeList();
 				VBox centerTabelLayout3 = centerTable3.theLayot(0, quentityVal3);
+				
+				add.setOnAction(e ->{
+					outcomeAdd.display();
+				});
+				
+				reloadTable.setOnAction(e ->{
+					centerTabelLayout3.getChildren().remove(0);
+					centerTabelLayout3.getChildren().add(0, centerTable3.theLayot(0, quentityVal3));
+					pageCombo.setValue("1");
+				});
+				
+				delete.setOnAction(e -> {
+					TableView<outcomeItems> table = centerTable3.table; 
+					outcomeItems fm = table.getSelectionModel().getSelectedItem();	
+					int selectedIndex = table.getSelectionModel().getSelectedIndex();
+					int selectedItemId = fm.getId();
+					
+					Button actionButton = new Button(rb.getString("delete"));
+					actionButton.setOnAction(ev -> {
+						outcome ouDB = new outcome();
+						int rm = ouDB.removeMember(selectedItemId);
+						if(rm == 1){
+							alertBox.display(rb.getString("message"), rb.getString("successDone"));
+							table.getItems().remove(selectedIndex);
+						}else{
+							alertBox.display(rb.getString("message"), rb.getString("errorHappend"));
+						}
+						Stage stage = (Stage) actionButton.getScene().getWindow();
+					    stage.close();			    
+					});
+					comfirmBox.display(rb.getString("message"), rb.getString("WULTdelete"), actionButton);
+				});
+				
 				centerLayout.getChildren().add(centerTabelLayout3);
 			break;
 		}
-		
-		pageCombo = new ComboBox<String>(pageOptions);
+	
+		pageCombo.setItems(pageOptions);
 		pageCombo.setValue("1");
 		
 		/*
@@ -113,16 +216,86 @@ public class loadTable {
 				HBox centerLayout_ = new HBox();
 				if(typex=="familyMembers"){
 					FamilyMemberList centerTable_ = new FamilyMemberList();
-					VBox centerTabelLayout_ = centerTable_.theLayot(page_,quentity_);
+					VBox centerTabelLayout_ = centerTable_.theLayot(page_,quentity_); 
 					centerLayout_.getChildren().add(centerTabelLayout_);
+					HBox.setMargin(centerTabelLayout_, new Insets(10,10,10,10));
+					
+					delete.setOnAction(e -> {
+						TableView<FamilyMembers> table = centerTable_.table;
+						FamilyMembers fm = table.getSelectionModel().getSelectedItem();	
+						int selectedIndex = table.getSelectionModel().getSelectedIndex();
+						int selectedItemId = fm.getId();
+						
+						Button actionButton = new Button(rb.getString("delete"));
+						actionButton.setOnAction(ev -> {
+							familyMembers fmDB = new familyMembers();
+							int rm = fmDB.removeMember(selectedItemId);
+							if(rm == 1){
+								alertBox.display(rb.getString("message"), rb.getString("successDone"));
+								table.getItems().remove(selectedIndex);
+							}else{
+								alertBox.display(rb.getString("message"), rb.getString("errorHappend"));
+							}
+							Stage stage = (Stage) actionButton.getScene().getWindow();
+						    stage.close();			    
+						});
+						comfirmBox.display(rb.getString("message"), rb.getString("WULTdelete"), actionButton);
+					});
 				}else if(typex=="incomes"){
 					incomeList centerTable2_ = new incomeList();
 					VBox centerTabelLayout2_ = centerTable2_.theLayot(page_,quentity_);
 					centerLayout_.getChildren().add(centerTabelLayout2_);
+					HBox.setMargin(centerTabelLayout2_, new Insets(10,10,10,10));
+					
+					delete.setOnAction(e -> {
+						TableView<incomeItems> table = centerTable2_.table;
+						incomeItems fm = table.getSelectionModel().getSelectedItem();	
+						int selectedIndex = table.getSelectionModel().getSelectedIndex();
+						int selectedItemId = fm.getId();
+						
+						Button actionButton = new Button(rb.getString("delete"));
+						actionButton.setOnAction(ev -> {
+							income inDB = new income();
+							int rm = inDB.removeMember(selectedItemId);
+							if(rm == 1){
+								alertBox.display(rb.getString("message"), rb.getString("successDone"));
+								table.getItems().remove(selectedIndex);
+							}else{
+								alertBox.display(rb.getString("message"), rb.getString("errorHappend"));
+							}
+							Stage stage = (Stage) actionButton.getScene().getWindow();
+						    stage.close();			    
+						});
+						comfirmBox.display(rb.getString("message"), rb.getString("WULTdelete"), actionButton);
+					});
+					
 				}else if(typex=="outcomes"){
 					outcomeList centerTable3_ = new outcomeList();
 					VBox centerTabelLayout3_ = centerTable3_.theLayot(page_,quentity_);
 					centerLayout_.getChildren().add(centerTabelLayout3_);
+					HBox.setMargin(centerTabelLayout3_, new Insets(10,10,10,10));
+					
+					delete.setOnAction(e -> {
+						TableView<outcomeItems> table = centerTable3_.table; 
+						outcomeItems fm = table.getSelectionModel().getSelectedItem();	
+						int selectedIndex = table.getSelectionModel().getSelectedIndex();
+						int selectedItemId = fm.getId();
+						
+						Button actionButton = new Button(rb.getString("delete"));
+						actionButton.setOnAction(ev -> {
+							outcome ouDB = new outcome();
+							int rm = ouDB.removeMember(selectedItemId);
+							if(rm == 1){
+								alertBox.display(rb.getString("message"), rb.getString("successDone"));
+								table.getItems().remove(selectedIndex);
+							}else{
+								alertBox.display(rb.getString("message"), rb.getString("errorHappend"));
+							}
+							Stage stage = (Stage) actionButton.getScene().getWindow();
+						    stage.close();			    
+						});
+						comfirmBox.display(rb.getString("message"), rb.getString("WULTdelete"), actionButton);
+					});
 				}
 				root.getChildren().add(centerLayout_);
 			}catch(Exception ex){
@@ -130,7 +303,7 @@ public class loadTable {
 			}
 		});
 		
-		topLayout.getChildren().addAll(page, pageCombo, add, edit, delete);
+		topLayout.getChildren().addAll(page, pageCombo, add, reloadTable, delete);
 		
 		
 		root.getChildren().addAll(topLayout, centerLayout);

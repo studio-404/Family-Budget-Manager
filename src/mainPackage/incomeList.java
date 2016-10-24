@@ -7,6 +7,7 @@ import java.text.SimpleDateFormat;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.VBox;
@@ -15,7 +16,7 @@ import java.sql.*;
 
 public class incomeList {
 	private ResourceBundle rb;
-	private TableView<incomeItems> table;
+	public TableView<incomeItems> table;
 	private VBox layout;
 	private TableColumn<incomeItems, Integer> idColumn;
 	private TableColumn<incomeItems, String> dateColumn;
@@ -60,6 +61,18 @@ public class incomeList {
 		table.setItems(getIncomes(f, l));
 		table.getColumns().addAll(idColumn, dateColumn, descColumn, investorColumn, amountColumn);
 		table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+		
+		table.setRowFactory( tv -> {
+		    TableRow<incomeItems> row = new TableRow<>();
+		    row.setOnMouseClicked(event -> {
+		        if (event.getClickCount() == 2 && (! row.isEmpty()) ) {
+		        	incomeItems rowData = row.getItem();
+		        	System.out.println(rowData.getId());
+		            mainPackage.editIncome.display(rowData.getId());
+		        }
+		    });
+		    return row ;
+		});
 		
 		return table;
 	}

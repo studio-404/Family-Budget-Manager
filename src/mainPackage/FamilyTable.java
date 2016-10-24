@@ -8,6 +8,7 @@ import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
@@ -50,12 +51,26 @@ public class FamilyTable {
 		addListItem.setMinHeight(30);
 		addListItem.setPadding(new Insets(15,0,15,0));
 		
+		addListItem.setOnAction(e ->{
+			FamilyAddMember.display();
+		});
+		
 		Button removeListItem = new Button();
 		removeListItem.getStyleClass().add("removeListItem");
 		removeListItem.setMinWidth(30);
 		removeListItem.setMinHeight(30);
 		removeListItem.setPadding(new Insets(15,0,15,0));
 		
+		Button reloadList = new Button();
+		reloadList.getStyleClass().add("reloadList");
+		reloadList.setMinWidth(30);
+		reloadList.setMinHeight(30);
+		reloadList.setPadding(new Insets(15,0,15,0));
+		
+		reloadList.setOnAction(e ->{
+			layout.getChildren().remove(1);
+			layout.getChildren().add(1, theTable());
+		});		
 		
 		removeListItem.setOnAction(e -> {
 			FamilyMembers fm = table.getSelectionModel().getSelectedItem();	
@@ -80,7 +95,7 @@ public class FamilyTable {
 		
 		HBox tableTopLayout = new HBox();	
 		tableTopLayout.setSpacing(5);
-		tableTopLayout.getChildren().addAll(FamilyTabletitle, getAllList, addListItem, removeListItem);
+		tableTopLayout.getChildren().addAll(FamilyTabletitle, getAllList, reloadList, addListItem, removeListItem);
 		
 		
 		
@@ -107,6 +122,17 @@ public class FamilyTable {
 		
 		table.getColumns().addAll(idColumn, nameColumn, surnameColumn, numberColumn);
 		table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+		
+		table.setRowFactory( tv -> {
+		    TableRow<FamilyMembers> row = new TableRow<>();
+		    row.setOnMouseClicked(event -> {
+		        if (event.getClickCount() == 2 && (! row.isEmpty()) ) {
+		        	FamilyMembers rowData = row.getItem();
+		            mainPackage.editFamilyMember.display(rowData.getId(), rowData.getName(), rowData.getSurname(), rowData.getNumber());
+		        }
+		    });
+		    return row ;
+		});
 		
 		return table;
 	}

@@ -5,6 +5,7 @@ import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.VBox;
@@ -13,7 +14,7 @@ import java.sql.*;
 
 public class FamilyMemberList {
 	private ResourceBundle rb;
-	private TableView<FamilyMembers> table;
+	public TableView<FamilyMembers> table;
 	private VBox layout;
 	private TableColumn<FamilyMembers, String> idColumn;
 	private TableColumn<FamilyMembers, String> nameColumn;
@@ -52,6 +53,17 @@ public class FamilyMemberList {
 		table.setItems(getFamilyMembers(f, l));
 		table.getColumns().addAll(idColumn, nameColumn, surnameColumn, numberColumn);
 		table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+		
+		table.setRowFactory( tv -> {
+		    TableRow<FamilyMembers> row = new TableRow<>();
+		    row.setOnMouseClicked(event -> {
+		        if (event.getClickCount() == 2 && (! row.isEmpty()) ) {
+		        	FamilyMembers rowData = row.getItem();
+		            mainPackage.editFamilyMember.display(rowData.getId(), rowData.getName(), rowData.getSurname(), rowData.getNumber());
+		        }
+		    });
+		    return row ;
+		});
 		
 		return table;
 	}

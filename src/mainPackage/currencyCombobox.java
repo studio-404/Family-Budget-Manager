@@ -14,7 +14,7 @@ public class currencyCombobox {
 	private String current;
 	private ComboBox<String> comboBox;
 	
-	public ComboBox<String> select(){
+	public ComboBox<String> select(int maxWidth){
 		options = FXCollections.observableArrayList();
 		cur = new currency();
 		rs = cur.selectCur();
@@ -27,7 +27,7 @@ public class currencyCombobox {
 			e.printStackTrace();
 		}		
 		comboBox = new ComboBox<String>(options);
-		comboBox.setMinWidth(350);
+		comboBox.setMinWidth(maxWidth);
 		comboBox.getStyleClass().add("chartComboBox");
 		comboBox.setValue("ლარი");
 		
